@@ -10,7 +10,12 @@ final class ProductNetworkManager extends NetworkManager<EmptyModel> {
       : super(
           options: BaseOptions(
             baseUrl: AppEnvironmentItems.baseUrl.value,
+            headers: {
+              HttpHeaders.contentTypeHeader: 'application/json',
+            },
           ),
+
+          // Handle the response using the fold method
         );
 
   /// Handle error

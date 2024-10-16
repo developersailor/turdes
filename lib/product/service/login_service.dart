@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:flutter/foundation.dart';
 import 'package:gen/gen.dart';
 import 'package:turdes/product/service/interface/login_operation.dart';
 import 'package:turdes/product/service/manager/product_service_manager.dart';
@@ -14,7 +15,8 @@ final class LoginService extends LoginOperation {
 
   @override
   Future<LoginResponse?> login(String? email, String? password) async {
-    final response = await _networkManager.send<LoginResponse, LoginResponse>(
+    final response =
+        await _networkManager.sendRequest<LoginResponse, LoginResponse>(
       ProductServicePath.login.value,
       parseModel: LoginResponse(),
       method: RequestType.POST,
@@ -23,10 +25,19 @@ final class LoginService extends LoginOperation {
         'password': password,
       },
     );
-    if (response.data != null) {
-      return response.data;
-    } else {
-      return null;
-    }
+    return response.fold(
+      onSuccess: (data) {
+        // If the request is successful, return the data
+        return data;
+      },
+      onError: (error) {
+        // If the request fails, handle the error (log it, show an error message, etc.)
+        if (kDebugMode) {
+          print('Login error: ${error.description}');
+        }
+        // Return an empty instance of LoginResponse or throw an exception
+        return LoginResponse(); // You can return an empty instance instead of null
+      },
+    );
   }
 }
