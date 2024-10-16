@@ -13,7 +13,7 @@ final class LoginService extends LoginOperation {
   final INetworkManager<EmptyModel> _networkManager;
 
   @override
-  Future<LoginResponse> login(String? email, String? password) async {
+  Future<LoginResponse?> login(String? email, String? password) async {
     final response = await _networkManager.send<LoginResponse, LoginResponse>(
       ProductServicePath.login.value,
       parseModel: LoginResponse(),
@@ -23,7 +23,10 @@ final class LoginService extends LoginOperation {
         'password': password,
       },
     );
-
-    return response.data ?? LoginResponse();
+    if (response.data != null) {
+      return response.data;
+    } else {
+      return null;
+    }
   }
 }
